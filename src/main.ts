@@ -11,8 +11,11 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
 
-  const port = process.env.PORT || 3000;  // ← utilise le port de Railway
-  await app.listen(port);
+  const port = process.env.PORT || 3000;
+
+  // 🔥 IMPORTANT pour Railway
+  await app.listen(port, '0.0.0.0');
+
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
