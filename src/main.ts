@@ -13,9 +13,9 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
 
-  // 🔥 IMPORTANT pour Railway
+  // 🔥 ULTRA IMPORTANT
   await app.listen(port, '0.0.0.0');
 
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`Application is running on port: ${port}`);
 }
 bootstrap();
