@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsString, MinLength, IsOptional } from 'class-validator';
-import { Rank } from '@prisma/client';
+import { Rank } from '../../../prisma/generated/prisma/client';
 
 export class CreateUserDto {
   @IsString()

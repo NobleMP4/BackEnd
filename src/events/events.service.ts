@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WeeksService } from '../weeks/weeks.service';
-import { DayName } from '@prisma/client';
+import { DayName } from '../../prisma/generated/prisma/client';
 
 @Injectable()
 export class EventsService {
