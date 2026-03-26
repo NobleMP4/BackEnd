@@ -5,11 +5,11 @@ import { AuthModule } from './auth/auth.module';
 import { WeeksModule } from './weeks/weeks.module';
 import { EventsModule } from './events/events.module';
 import { UsersModule } from './users/users.module';
-// import { PrismaModule } from './../prisma/prisma.module'; ❌
+import { PrismaModule } from './../prisma/prisma.module';
 
 @Module({
   imports: [
-    // PrismaModule, ❌ on désactive
+    PrismaModule,
     AuthModule,
     WeeksModule,
     EventsModule,
