@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -6,12 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  update(id: string, updateUserDto: UpdateUserDto) {
-    throw new Error('Method not implemented.');
-  }
-  updateRank(arg0: number, rank: string) {
-    throw new Error('Method not implemented.');
-  }
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
@@ -49,6 +43,42 @@ export class UsersService {
         password: hashedPassword,
         rank: rest.rank as any,
       },
+    });
+  }
+
+  // --- Logique de mise à jour implémentée ---
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const { password, ...rest } = updateUserDto;
+    const dataToUpdate: any = { ...rest };
+
+    // 1. Si un nouveau mot de passe est fourni, on le hache
+    if (password) {
+      const salt = await bcrypt.genSalt();
+      dataToUpdate.password = await bcrypt.hash(password, salt);
+    }
+
+    try {
+      return await this.prisma.user.update({
+        where: { id: Number(id) }, // Converti en Number si ton ID Prisma est un Int
+        data: dataToUpdate,
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          rank: true,
+        },
+      });
+    } catch (error) {
+      // Prisma renvoie une erreur spécifique si le record n'existe pas
+      throw new NotFoundException(`Utilisateur avec l'ID ${id} introuvable`);
+    }
+  }
+
+  async updateRank(id: number, rank: string) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { rank: rank as any },
     });
   }
 }
