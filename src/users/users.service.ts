@@ -2,9 +2,13 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
+  update(id: string, updateUserDto: UpdateUserDto) {
+    throw new Error('Method not implemented.');
+  }
   updateRank(arg0: number, rank: string) {
     throw new Error('Method not implemented.');
   }
