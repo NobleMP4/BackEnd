@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { lastValueFrom, timer } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class DiscordService {
@@ -13,7 +13,7 @@ export class DiscordService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async publishPlanning(weekData: any, forceMention: boolean = false, retryCount = 0) {
+  async publishPlanning(weekData: any, forceMention: boolean = false) {
     const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
     const events = weekData.events || [];
@@ -58,30 +58,25 @@ export class DiscordService {
       url = `${this.WEBHOOK_URL}/messages/${weekData.discord_msg_id}`;
       method = 'patch';
     } else {
+      // Note: On garde wait=true pour récupérer l'ID, mais c'est ce qui est sensible au rate limit
       url += "?wait=true";
     }
 
+    // Exécution de la requête
     try {
       const response = await lastValueFrom(this.httpService[method](url, payload));
       return response.data?.id || weekData.discord_msg_id;
     } catch (error: any) {
-      const responseData = error.response?.data;
-      const status = error.response?.status;
-
-      // Gestion automatique du Rate Limit (429 ou erreur Cloudflare 1015)
-      if ((status === 429 || responseData?.error_code === 1015) && retryCount < 3) {
-        const waitTimeSeconds = responseData?.retry_after || 30;
-        
-        this.logger.warn(`Rate Limit détecté sur Discord. Attente de ${waitTimeSeconds}s avant l'essai #${retryCount + 1}`);
-        
-        // Pause forcée avant de relancer
-        await lastValueFrom(timer(waitTimeSeconds * 1000));
-        
-        // On retente l'envoi
-        return this.publishPlanning(weekData, forceMention, retryCount + 1);
+      // Analyse de l'erreur sans bloquer le thread
+      const discordError = error.response?.data;
+      
+      if (error.response?.status === 429 || discordError?.error_code === 1015) {
+        this.logger.error(`LIMITE DISCORD : Trop de requêtes simultanées. Le message n'a pas pu être mis à jour.`);
+        // On retourne l'ancien ID pour ne pas corrompre ta base de données
+        return weekData.discord_msg_id || null;
       }
 
-      console.error("Erreur Discord détaillée:", responseData || error.message);
+      console.error("Erreur Discord détaillée:", discordError || error.message);
       return null;
     }
   }
