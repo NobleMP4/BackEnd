@@ -4,6 +4,8 @@ import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class DiscordService {
+  
+  //private readonly WEBHOOK_URL = "https://discord.com/api/webhooks/1481212029342716076/dU-vOEs8Edp9pQsGdDLm9F_P74rB4NWb7HSyyg4JN6q_fnsGsZj2a4BGMytUu8HBQKTb";
   private readonly WEBHOOK_URL = "https://discord.com/api/webhooks/1481212029342716076/dU-vOEs8Edp9pQsGdDLm9F_P74rB4NWb7HSyyg4JN6q_fnsGsZj2a4BGMytUu8HBQKTb";
   private readonly ROLE_ACADEMY_ID = "1471485398411645120";
   private readonly ROLE_INSTRUCTEUR_ID = "1471485450467147911";
