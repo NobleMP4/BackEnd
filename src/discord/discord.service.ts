@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, timer } from 'rxjs';
 
 @Injectable()
 export class DiscordService {
+  private readonly logger = new Logger(DiscordService.name);
   
   private readonly WEBHOOK_URL = "https://discord.com/api/webhooks/1481212029342716076/dU-vOEs8Edp9pQsGdDLm9F_P74rB4NWb7HSyyg4JN6q_fnsGsZj2a4BGMytUu8HBQKTb";
   //private readonly WEBHOOK_URL = "https://discord.com/api/webhooks/1481216948409733121/fMrvZdSnr9FfVI7VXjsVBWvZ2ZAC5O2WGtCSxE6US5NdLnMffGdiW0NXGSvOWiv0EXUu";
@@ -12,7 +13,7 @@ export class DiscordService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async publishPlanning(weekData: any, forceMention: boolean = false) {
+  async publishPlanning(weekData: any, forceMention: boolean = false, retryCount = 0) {
     const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
     const events = weekData.events || [];
@@ -64,7 +65,23 @@ export class DiscordService {
       const response = await lastValueFrom(this.httpService[method](url, payload));
       return response.data?.id || weekData.discord_msg_id;
     } catch (error: any) {
-      console.error("Erreur Discord détaillée:", error.response?.data || error.message);
+      const responseData = error.response?.data;
+      const status = error.response?.status;
+
+      // Gestion automatique du Rate Limit (429 ou erreur Cloudflare 1015)
+      if ((status === 429 || responseData?.error_code === 1015) && retryCount < 3) {
+        const waitTimeSeconds = responseData?.retry_after || 30;
+        
+        this.logger.warn(`Rate Limit détecté sur Discord. Attente de ${waitTimeSeconds}s avant l'essai #${retryCount + 1}`);
+        
+        // Pause forcée avant de relancer
+        await lastValueFrom(timer(waitTimeSeconds * 1000));
+        
+        // On retente l'envoi
+        return this.publishPlanning(weekData, forceMention, retryCount + 1);
+      }
+
+      console.error("Erreur Discord détaillée:", responseData || error.message);
       return null;
     }
   }
