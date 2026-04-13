@@ -8,6 +8,7 @@ export class DiscordService {
   
   // L'URL de ton bot bridge (à adapter selon ton IP/Port)
   private readonly BOT_BRIDGE_URL = "https://nod.edperso.fr/webhook-bridge";
+  //URL
 
   // L'ID du salon où le bot doit poster le planning
   private readonly DISCORD_CHANNEL_ID = "1480646093405425674";
