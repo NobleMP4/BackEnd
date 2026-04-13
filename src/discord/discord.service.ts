@@ -8,18 +8,18 @@ export class DiscordService {
 
   private readonly BOT_BRIDGE_URL = "https://nod.edperso.fr/webhook-bridge";
 
-private readonly SERVERS = [
-  {
-    channelId: "1480646093405425674",
-    roleAcademyId: "1471485398411645120",
-    roleInstructeurId: "1471485450467147911",
-  },
-  {
-    channelId: "1449141619746934819",
-    roleAcademyId: null,
-    roleInstructeurId: null,
-  }
-];
+  private readonly SERVERS = [
+    {
+      channelId: "1480646093405425674",
+      roleAcademyId: "1471485398411645120",
+      roleInstructeurId: "1471485450467147911",
+    },
+    {
+      channelId: "1449141619746934819",
+      roleAcademyId: null,
+      roleInstructeurId: null,
+    }
+  ];
 
   constructor(private readonly httpService: HttpService) {}
 
@@ -78,15 +78,23 @@ private readonly SERVERS = [
   }
 
   async publishPlanning(weekData: any, forceMention: boolean = false) {
+    const messageIds = [
+      weekData.discord_msg_id || null,
+      weekData.discord_msg_id_2 || null,
+    ];
+
     const results: { channelId: string; messageId: string | null }[] = [];
 
-    for (const server of this.SERVERS) {
+    for (let i = 0; i < this.SERVERS.length; i++) {
+      const server = this.SERVERS[i];
       const payload = this.buildPayload(weekData, server.roleAcademyId, server.roleInstructeurId);
-      const messageId = weekData.discord_msg_id || null;
-      const newMessageId = await this.sendToServer(server.channelId, messageId, payload);
+      const newMessageId = await this.sendToServer(server.channelId, messageIds[i], payload);
       results.push({ channelId: server.channelId, messageId: newMessageId });
     }
 
-    return results[0]?.messageId || null;
+    return {
+      discord_msg_id: results[0]?.messageId || null,
+      discord_msg_id_2: results[1]?.messageId || null,
+    };
   }
 }
