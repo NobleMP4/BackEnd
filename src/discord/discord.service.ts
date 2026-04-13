@@ -5,27 +5,31 @@ import { lastValueFrom } from 'rxjs';
 @Injectable()
 export class DiscordService {
   private readonly logger = new Logger(DiscordService.name);
-  
-  // L'URL de ton bot bridge (à adapter selon ton IP/Port)
+
   private readonly BOT_BRIDGE_URL = "https://nod.edperso.fr/webhook-bridge";
-  //URL
 
-  // L'ID du salon où le bot doit poster le planning
-  private readonly DISCORD_CHANNEL_ID = "1480646093405425674";
-
-  private readonly ROLE_ACADEMY_ID = "1471485398411645120";
-  private readonly ROLE_INSTRUCTEUR_ID = "1471485450467147911";
+  private readonly SERVERS = [
+  {
+    channelId: process.env.DISCORD_CHANNEL_ID,
+    roleAcademyId: "1471485398411645120",
+    roleInstructeurId: "1471485450467147911",
+  },
+  {
+    channelId: process.env.DISCORD_CHANNEL_ID_2,
+    roleAcademyId: null,
+    roleInstructeurId: null,
+  }
+  ];
 
   constructor(private readonly httpService: HttpService) {}
 
-  async publishPlanning(weekData: any, forceMention: boolean = false) {
+  private buildPayload(weekData: any, roleAcademyId: string | null, roleInstructeurId: string | null) {
     const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
     const events = weekData.events || [];
 
-    // --- On garde TOUTE ta logique de mise en forme ici ---
     const fields = jours.map(j => {
       const dayEvents = events.filter((e: any) => e.day_name === j);
-      let val = (dayEvents.length > 0)
+      const val = (dayEvents.length > 0)
         ? dayEvents.map((e: any) => {
             const staffList = e.participants?.map((p: any) => `• ${p.user.firstName} ${p.user.lastName}`).join('\n') || '*Aucun instructeur*';
             return `⏰ **${e.event_time}** — ${e.title}\n> 📍 ${e.location}\n${staffList}`;
@@ -39,14 +43,13 @@ export class DiscordService {
       };
     });
 
-    const mentionContent = `<@&${this.ROLE_ACADEMY_ID}> <@&${this.ROLE_INSTRUCTEUR_ID}>`;
+    const mentionContent = (roleAcademyId && roleInstructeurId)
+      ? `<@&${roleAcademyId}> <@&${roleInstructeurId}>`
+      : "";
 
-    // Le "paquet" (payload) complet qu'on envoie au bot
-    const payload = {
+    return {
       content: mentionContent,
-      allowed_mentions: {
-        parse: ["roles"]
-      },
+      allowed_mentions: roleAcademyId ? { parse: ["roles"] } : { parse: [] },
       embeds: [{
         title: `🏛️ - PLANNING DE LA POLICE ACADEMY - 🏛️\nSemaine du ${weekData.title}`,
         color: 7318776,
@@ -56,25 +59,34 @@ export class DiscordService {
         timestamp: new Date()
       }]
     };
+  }
 
-    // --- Envoi vers le BOT BRIDGE ---
+  private async sendToServer(channelId: string, messageId: string | null, payload: any): Promise<string | null> {
     try {
       const response = await lastValueFrom(
         this.httpService.post(this.BOT_BRIDGE_URL, {
-          channelId: this.DISCORD_CHANNEL_ID,
-          messageId: weekData.discord_msg_id, // Si c'est null, le bot va créer. Sinon, il va éditer.
-          payload: payload
+          channelId,
+          messageId,
+          payload
         })
       );
-
-      // Le bot renvoie l'ID du message Discord (qu'il soit nouveau ou édité)
-      return response.data?.id || weekData.discord_msg_id;
-
+      return response.data?.id || messageId;
     } catch (error: any) {
-      this.logger.error(`Erreur de communication avec le Bot Bridge : ${error.message}`);
-      
-      // En cas d'erreur de réseau ou autre, on retourne l'ID actuel pour ne pas casser la BDD
-      return weekData.discord_msg_id || null;
+      this.logger.error(`Erreur bridge pour channel ${channelId} : ${error.message}`);
+      return messageId || null;
     }
+  }
+
+  async publishPlanning(weekData: any, forceMention: boolean = false) {
+    const results: { channelId: string; messageId: string | null }[] = [];
+
+    for (const server of this.SERVERS) {
+      const payload = this.buildPayload(weekData, server.roleAcademyId, server.roleInstructeurId);
+      const messageId = weekData.discord_msg_id || null;
+      const newMessageId = await this.sendToServer(server.channelId, messageId, payload);
+      results.push({ channelId: server.channelId, messageId: newMessageId });
+    }
+
+    return results[0]?.messageId || null;
   }
 }
