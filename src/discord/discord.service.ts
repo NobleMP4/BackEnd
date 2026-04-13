@@ -10,12 +10,12 @@ export class DiscordService {
 
 private readonly SERVERS = [
   {
-    channelId: process.env.DISCORD_CHANNEL_ID as string,
+    channelId: "1480646093405425674",
     roleAcademyId: "1471485398411645120",
     roleInstructeurId: "1471485450467147911",
   },
   {
-    channelId: process.env.DISCORD_CHANNEL_ID_2 as string,
+    channelId: "1449141619746934819",
     roleAcademyId: null,
     roleInstructeurId: null,
   }
