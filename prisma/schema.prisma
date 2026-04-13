@@ -34,11 +34,12 @@ model User {
 }
 
 model Week {
-  id              Int      @id @default(autoincrement())
-  title           String
-  discord_msg_id  String?  // Ajoute cette ligne (le ? signifie optionnel)
-  created_at      DateTime @default(now())
-  events          Event[]
+  id                    Int      @id @default(autoincrement())
+  title                 String
+  discord_msg_id        String?  // Message serveur 1
+  discord_msg_id_2      String?  // Message serveur 2
+  created_at            DateTime @default(now())
+  events                Event[]
 }
 
 model Event {
