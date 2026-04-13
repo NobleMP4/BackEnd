@@ -6,8 +6,12 @@ import { lastValueFrom } from 'rxjs';
 export class DiscordService {
   private readonly logger = new Logger(DiscordService.name);
   
-  private readonly WEBHOOK_URL = "https://discord.com/api/webhooks/1481212029342716076/dU-vOEs8Edp9pQsGdDLm9F_P74rB4NWb7HSyyg4JN6q_fnsGsZj2a4BGMytUu8HBQKTb";
-  //private readonly WEBHOOK_URL = "https://discord.com/api/webhooks/1481216948409733121/fMrvZdSnr9FfVI7VXjsVBWvZ2ZAC5O2WGtCSxE6US5NdLnMffGdiW0NXGSvOWiv0EXUu";
+  // L'URL de ton bot bridge (à adapter selon ton IP/Port)
+  private readonly BOT_BRIDGE_URL = "https://nod.edperso.fr/webhook-bridge";
+
+  // L'ID du salon où le bot doit poster le planning
+  private readonly DISCORD_CHANNEL_ID = "1480646093405425674";
+
   private readonly ROLE_ACADEMY_ID = "1471485398411645120";
   private readonly ROLE_INSTRUCTEUR_ID = "1471485450467147911";
 
@@ -15,9 +19,9 @@ export class DiscordService {
 
   async publishPlanning(weekData: any, forceMention: boolean = false) {
     const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-
     const events = weekData.events || [];
 
+    // --- On garde TOUTE ta logique de mise en forme ici ---
     const fields = jours.map(j => {
       const dayEvents = events.filter((e: any) => e.day_name === j);
       let val = (dayEvents.length > 0)
@@ -36,6 +40,7 @@ export class DiscordService {
 
     const mentionContent = `<@&${this.ROLE_ACADEMY_ID}> <@&${this.ROLE_INSTRUCTEUR_ID}>`;
 
+    // Le "paquet" (payload) complet qu'on envoie au bot
     const payload = {
       content: mentionContent,
       allowed_mentions: {
@@ -51,33 +56,24 @@ export class DiscordService {
       }]
     };
 
-    let url = this.WEBHOOK_URL;
-    let method: 'post' | 'patch' = 'post';
-
-    if (weekData.discord_msg_id) {
-      url = `${this.WEBHOOK_URL}/messages/${weekData.discord_msg_id}`;
-      method = 'patch';
-    } else {
-      // Note: On garde wait=true pour récupérer l'ID, mais c'est ce qui est sensible au rate limit
-      url += "?wait=true";
-    }
-
-    // Exécution de la requête
+    // --- Envoi vers le BOT BRIDGE ---
     try {
-      const response = await lastValueFrom(this.httpService[method](url, payload));
-      return response.data?.id || weekData.discord_msg_id;
-    } catch (error: any) {
-      // Analyse de l'erreur sans bloquer le thread
-      const discordError = error.response?.data;
-      
-      if (error.response?.status === 429 || discordError?.error_code === 1015) {
-        this.logger.error(`LIMITE DISCORD : Trop de requêtes simultanées. Le message n'a pas pu être mis à jour.`);
-        // On retourne l'ancien ID pour ne pas corrompre ta base de données
-        return weekData.discord_msg_id || null;
-      }
+      const response = await lastValueFrom(
+        this.httpService.post(this.BOT_BRIDGE_URL, {
+          channelId: this.DISCORD_CHANNEL_ID,
+          messageId: weekData.discord_msg_id, // Si c'est null, le bot va créer. Sinon, il va éditer.
+          payload: payload
+        })
+      );
 
-      console.error("Erreur Discord détaillée:", discordError || error.message);
-      return null;
+      // Le bot renvoie l'ID du message Discord (qu'il soit nouveau ou édité)
+      return response.data?.id || weekData.discord_msg_id;
+
+    } catch (error: any) {
+      this.logger.error(`Erreur de communication avec le Bot Bridge : ${error.message}`);
+      
+      // En cas d'erreur de réseau ou autre, on retourne l'ID actuel pour ne pas casser la BDD
+      return weekData.discord_msg_id || null;
     }
   }
 }
