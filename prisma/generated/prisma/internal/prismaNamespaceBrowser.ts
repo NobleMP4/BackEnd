@@ -91,7 +91,8 @@ export const WeekScalarFieldEnum = {
   id: 'id',
   title: 'title',
   discord_msg_id: 'discord_msg_id',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  discord_msg_id_2: 'discord_msg_id_2'
 } as const
 
 export type WeekScalarFieldEnum = (typeof WeekScalarFieldEnum)[keyof typeof WeekScalarFieldEnum]
@@ -145,7 +146,8 @@ export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 export const WeekOrderByRelevanceFieldEnum = {
   title: 'title',
-  discord_msg_id: 'discord_msg_id'
+  discord_msg_id: 'discord_msg_id',
+  discord_msg_id_2: 'discord_msg_id_2'
 } as const
 
 export type WeekOrderByRelevanceFieldEnum = (typeof WeekOrderByRelevanceFieldEnum)[keyof typeof WeekOrderByRelevanceFieldEnum]
