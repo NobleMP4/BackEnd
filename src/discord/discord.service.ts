@@ -8,18 +8,18 @@ export class DiscordService {
 
   private readonly BOT_BRIDGE_URL = "https://nod.edperso.fr/webhook-bridge";
 
-  private readonly SERVERS = [
+private readonly SERVERS = [
   {
-    channelId: process.env.DISCORD_CHANNEL_ID,
+    channelId: process.env.DISCORD_CHANNEL_ID as string,
     roleAcademyId: "1471485398411645120",
     roleInstructeurId: "1471485450467147911",
   },
   {
-    channelId: process.env.DISCORD_CHANNEL_ID_2,
+    channelId: process.env.DISCORD_CHANNEL_ID_2 as string,
     roleAcademyId: null,
     roleInstructeurId: null,
   }
-  ];
+];
 
   constructor(private readonly httpService: HttpService) {}
 
