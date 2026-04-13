@@ -28,12 +28,15 @@ export class WeeksService {
       }
     });
 
-    const discordMsgId = await this.discordService.publishPlanning(newWeek);
+    const msgIds = await this.discordService.publishPlanning(newWeek);
 
-    if (discordMsgId) {
+    if (msgIds) {
       return await this.prisma.week.update({
         where: { id: newWeek.id },
-        data: { discord_msg_id: discordMsgId },
+        data: {
+          discord_msg_id: msgIds.discord_msg_id,
+          discord_msg_id_2: msgIds.discord_msg_id_2,
+        },
         include: {
           events: {
             include: {
@@ -75,17 +78,18 @@ export class WeeksService {
     return week;
   }
 
-  // forceMention = true : publish manuel depuis le panel (ping les rôles)
-  // forceMention = false : mise à jour silencieuse (ajout/modif d'event)
   async triggerDiscordUpdate(weekId: number, forceMention: boolean = false) {
     const week = await this.findOne(weekId);
     if (week) {
-      const newDiscordId = await this.discordService.publishPlanning(week, forceMention);
+      const msgIds = await this.discordService.publishPlanning(week, forceMention);
 
-      if (newDiscordId && week.discord_msg_id !== newDiscordId) {
+      if (msgIds) {
         await this.prisma.week.update({
           where: { id: week.id },
-          data: { discord_msg_id: newDiscordId }
+          data: {
+            discord_msg_id: msgIds.discord_msg_id,
+            discord_msg_id_2: msgIds.discord_msg_id_2,
+          }
         });
       }
     }

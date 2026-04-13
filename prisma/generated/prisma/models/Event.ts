@@ -228,8 +228,8 @@ export type EventWhereInput = {
   title?: Prisma.StringFilter<"Event"> | string
   event_time?: Prisma.StringNullableFilter<"Event"> | string | null
   location?: Prisma.StringNullableFilter<"Event"> | string | null
-  week?: Prisma.XOR<Prisma.WeekScalarRelationFilter, Prisma.WeekWhereInput>
   participants?: Prisma.EventParticipantListRelationFilter
+  week?: Prisma.XOR<Prisma.WeekScalarRelationFilter, Prisma.WeekWhereInput>
 }
 
 export type EventOrderByWithRelationInput = {
@@ -239,8 +239,8 @@ export type EventOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   event_time?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
-  week?: Prisma.WeekOrderByWithRelationInput
   participants?: Prisma.EventParticipantOrderByRelationAggregateInput
+  week?: Prisma.WeekOrderByWithRelationInput
   _relevance?: Prisma.EventOrderByRelevanceInput
 }
 
@@ -254,8 +254,8 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Event"> | string
   event_time?: Prisma.StringNullableFilter<"Event"> | string | null
   location?: Prisma.StringNullableFilter<"Event"> | string | null
-  week?: Prisma.XOR<Prisma.WeekScalarRelationFilter, Prisma.WeekWhereInput>
   participants?: Prisma.EventParticipantListRelationFilter
+  week?: Prisma.XOR<Prisma.WeekScalarRelationFilter, Prisma.WeekWhereInput>
 }, "id">
 
 export type EventOrderByWithAggregationInput = {
@@ -289,8 +289,8 @@ export type EventCreateInput = {
   title: string
   event_time?: string | null
   location?: string | null
-  week: Prisma.WeekCreateNestedOneWithoutEventsInput
   participants?: Prisma.EventParticipantCreateNestedManyWithoutEventInput
+  week: Prisma.WeekCreateNestedOneWithoutEventsInput
 }
 
 export type EventUncheckedCreateInput = {
@@ -308,8 +308,8 @@ export type EventUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   event_time?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  week?: Prisma.WeekUpdateOneRequiredWithoutEventsNestedInput
   participants?: Prisma.EventParticipantUpdateManyWithoutEventNestedInput
+  week?: Prisma.WeekUpdateOneRequiredWithoutEventsNestedInput
 }
 
 export type EventUncheckedUpdateInput = {
@@ -641,8 +641,8 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   title?: boolean
   event_time?: boolean
   location?: boolean
-  week?: boolean | Prisma.WeekDefaultArgs<ExtArgs>
   participants?: boolean | Prisma.Event$participantsArgs<ExtArgs>
+  week?: boolean | Prisma.WeekDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
@@ -659,16 +659,16 @@ export type EventSelectScalar = {
 
 export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "week_id" | "day_name" | "title" | "event_time" | "location", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  week?: boolean | Prisma.WeekDefaultArgs<ExtArgs>
   participants?: boolean | Prisma.Event$participantsArgs<ExtArgs>
+  week?: boolean | Prisma.WeekDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Event"
   objects: {
-    week: Prisma.$WeekPayload<ExtArgs>
     participants: Prisma.$EventParticipantPayload<ExtArgs>[]
+    week: Prisma.$WeekPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1017,8 +1017,8 @@ readonly fields: EventFieldRefs;
  */
 export interface Prisma__EventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  week<T extends Prisma.WeekDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WeekDefaultArgs<ExtArgs>>): Prisma.Prisma__WeekClient<runtime.Types.Result.GetResult<Prisma.$WeekPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   participants<T extends Prisma.Event$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  week<T extends Prisma.WeekDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WeekDefaultArgs<ExtArgs>>): Prisma.Prisma__WeekClient<runtime.Types.Result.GetResult<Prisma.$WeekPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

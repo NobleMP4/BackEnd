@@ -39,6 +39,7 @@ export type WeekMinAggregateOutputType = {
   title: string | null
   discord_msg_id: string | null
   created_at: Date | null
+  discord_msg_id_2: string | null
 }
 
 export type WeekMaxAggregateOutputType = {
@@ -46,6 +47,7 @@ export type WeekMaxAggregateOutputType = {
   title: string | null
   discord_msg_id: string | null
   created_at: Date | null
+  discord_msg_id_2: string | null
 }
 
 export type WeekCountAggregateOutputType = {
@@ -53,6 +55,7 @@ export type WeekCountAggregateOutputType = {
   title: number
   discord_msg_id: number
   created_at: number
+  discord_msg_id_2: number
   _all: number
 }
 
@@ -70,6 +73,7 @@ export type WeekMinAggregateInputType = {
   title?: true
   discord_msg_id?: true
   created_at?: true
+  discord_msg_id_2?: true
 }
 
 export type WeekMaxAggregateInputType = {
@@ -77,6 +81,7 @@ export type WeekMaxAggregateInputType = {
   title?: true
   discord_msg_id?: true
   created_at?: true
+  discord_msg_id_2?: true
 }
 
 export type WeekCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type WeekCountAggregateInputType = {
   title?: true
   discord_msg_id?: true
   created_at?: true
+  discord_msg_id_2?: true
   _all?: true
 }
 
@@ -178,6 +184,7 @@ export type WeekGroupByOutputType = {
   title: string
   discord_msg_id: string | null
   created_at: Date
+  discord_msg_id_2: string | null
   _count: WeekCountAggregateOutputType | null
   _avg: WeekAvgAggregateOutputType | null
   _sum: WeekSumAggregateOutputType | null
@@ -208,6 +215,7 @@ export type WeekWhereInput = {
   title?: Prisma.StringFilter<"Week"> | string
   discord_msg_id?: Prisma.StringNullableFilter<"Week"> | string | null
   created_at?: Prisma.DateTimeFilter<"Week"> | Date | string
+  discord_msg_id_2?: Prisma.StringNullableFilter<"Week"> | string | null
   events?: Prisma.EventListRelationFilter
 }
 
@@ -216,6 +224,7 @@ export type WeekOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   discord_msg_id?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  discord_msg_id_2?: Prisma.SortOrderInput | Prisma.SortOrder
   events?: Prisma.EventOrderByRelationAggregateInput
   _relevance?: Prisma.WeekOrderByRelevanceInput
 }
@@ -228,6 +237,7 @@ export type WeekWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Week"> | string
   discord_msg_id?: Prisma.StringNullableFilter<"Week"> | string | null
   created_at?: Prisma.DateTimeFilter<"Week"> | Date | string
+  discord_msg_id_2?: Prisma.StringNullableFilter<"Week"> | string | null
   events?: Prisma.EventListRelationFilter
 }, "id">
 
@@ -236,6 +246,7 @@ export type WeekOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   discord_msg_id?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  discord_msg_id_2?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.WeekCountOrderByAggregateInput
   _avg?: Prisma.WeekAvgOrderByAggregateInput
   _max?: Prisma.WeekMaxOrderByAggregateInput
@@ -251,12 +262,14 @@ export type WeekScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Week"> | string
   discord_msg_id?: Prisma.StringNullableWithAggregatesFilter<"Week"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Week"> | Date | string
+  discord_msg_id_2?: Prisma.StringNullableWithAggregatesFilter<"Week"> | string | null
 }
 
 export type WeekCreateInput = {
   title: string
   discord_msg_id?: string | null
   created_at?: Date | string
+  discord_msg_id_2?: string | null
   events?: Prisma.EventCreateNestedManyWithoutWeekInput
 }
 
@@ -265,6 +278,7 @@ export type WeekUncheckedCreateInput = {
   title: string
   discord_msg_id?: string | null
   created_at?: Date | string
+  discord_msg_id_2?: string | null
   events?: Prisma.EventUncheckedCreateNestedManyWithoutWeekInput
 }
 
@@ -272,6 +286,7 @@ export type WeekUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   discord_msg_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discord_msg_id_2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   events?: Prisma.EventUpdateManyWithoutWeekNestedInput
 }
 
@@ -280,6 +295,7 @@ export type WeekUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   discord_msg_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discord_msg_id_2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   events?: Prisma.EventUncheckedUpdateManyWithoutWeekNestedInput
 }
 
@@ -288,12 +304,14 @@ export type WeekCreateManyInput = {
   title: string
   discord_msg_id?: string | null
   created_at?: Date | string
+  discord_msg_id_2?: string | null
 }
 
 export type WeekUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   discord_msg_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discord_msg_id_2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WeekUncheckedUpdateManyInput = {
@@ -301,6 +319,7 @@ export type WeekUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   discord_msg_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discord_msg_id_2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WeekOrderByRelevanceInput = {
@@ -314,6 +333,7 @@ export type WeekCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   discord_msg_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  discord_msg_id_2?: Prisma.SortOrder
 }
 
 export type WeekAvgOrderByAggregateInput = {
@@ -325,6 +345,7 @@ export type WeekMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   discord_msg_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  discord_msg_id_2?: Prisma.SortOrder
 }
 
 export type WeekMinOrderByAggregateInput = {
@@ -332,6 +353,7 @@ export type WeekMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   discord_msg_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  discord_msg_id_2?: Prisma.SortOrder
 }
 
 export type WeekSumOrderByAggregateInput = {
@@ -365,6 +387,7 @@ export type WeekCreateWithoutEventsInput = {
   title: string
   discord_msg_id?: string | null
   created_at?: Date | string
+  discord_msg_id_2?: string | null
 }
 
 export type WeekUncheckedCreateWithoutEventsInput = {
@@ -372,6 +395,7 @@ export type WeekUncheckedCreateWithoutEventsInput = {
   title: string
   discord_msg_id?: string | null
   created_at?: Date | string
+  discord_msg_id_2?: string | null
 }
 
 export type WeekCreateOrConnectWithoutEventsInput = {
@@ -394,6 +418,7 @@ export type WeekUpdateWithoutEventsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   discord_msg_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discord_msg_id_2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type WeekUncheckedUpdateWithoutEventsInput = {
@@ -401,6 +426,7 @@ export type WeekUncheckedUpdateWithoutEventsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   discord_msg_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discord_msg_id_2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -439,6 +465,7 @@ export type WeekSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   title?: boolean
   discord_msg_id?: boolean
   created_at?: boolean
+  discord_msg_id_2?: boolean
   events?: boolean | Prisma.Week$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.WeekCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["week"]>
@@ -450,9 +477,10 @@ export type WeekSelectScalar = {
   title?: boolean
   discord_msg_id?: boolean
   created_at?: boolean
+  discord_msg_id_2?: boolean
 }
 
-export type WeekOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "discord_msg_id" | "created_at", ExtArgs["result"]["week"]>
+export type WeekOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "discord_msg_id" | "created_at" | "discord_msg_id_2", ExtArgs["result"]["week"]>
 export type WeekInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | Prisma.Week$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.WeekCountOutputTypeDefaultArgs<ExtArgs>
@@ -468,6 +496,7 @@ export type $WeekPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     title: string
     discord_msg_id: string | null
     created_at: Date
+    discord_msg_id_2: string | null
   }, ExtArgs["result"]["week"]>
   composites: {}
 }
@@ -842,6 +871,7 @@ export interface WeekFieldRefs {
   readonly title: Prisma.FieldRef<"Week", 'String'>
   readonly discord_msg_id: Prisma.FieldRef<"Week", 'String'>
   readonly created_at: Prisma.FieldRef<"Week", 'DateTime'>
+  readonly discord_msg_id_2: Prisma.FieldRef<"Week", 'String'>
 }
     
 

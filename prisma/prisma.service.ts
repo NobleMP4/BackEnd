@@ -5,9 +5,18 @@ import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
-    // Au lieu de créer un pool mysql2 manuellement, 
-    // on passe l'URL directement à l'adaptateur.
-    const adapter = new PrismaMariaDb(process.env.DATABASE_URL as string);
+    const dbUrl = new URL(process.env.DATABASE_URL as string);
+
+    const adapter = new PrismaMariaDb({
+      host: dbUrl.hostname,
+      port: Number(dbUrl.port),
+      user: dbUrl.username,
+      password: dbUrl.password,
+      database: dbUrl.pathname.replace('/', ''),
+      connectionLimit: 2,
+      acquireTimeout: 30000,
+      connectTimeout: 30000,
+    });
 
     super({ adapter });
   }
@@ -17,8 +26,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async onModuleDestroy() {
-    // TRÈS IMPORTANT pour ton quota d'hébergeur : 
-    // ferme la connexion quand NestJS redémarre.
     await this.$disconnect();
   }
 }
