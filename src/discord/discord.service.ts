@@ -15,7 +15,7 @@ export class DiscordService {
       roleInstructeurId: "1471485450467147911",
     },
     {
-      channelId: "1449141619746934819",
+      channelId: "1484561666535457008",
       roleAcademyId: null,
       roleInstructeurId: null,
     }
